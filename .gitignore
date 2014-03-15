@@ -216,4 +216,4 @@ pip-log.txt
 
 #ingore Qt Files
 *.pro.user
-build/
+build*/

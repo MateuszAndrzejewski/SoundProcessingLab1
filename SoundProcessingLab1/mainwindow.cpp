@@ -20,14 +20,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_openFile_pushButton_clicked()
 {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+    if(fileName.length() == 0)
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0),
+                                                    tr("Sound files (*.wav);;All files (*.*)"));
+    else
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    fileName,
                                                     tr("Sound files (*.wav);;All files (*.*)"));
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_playFile_pushButton_clicked()
 {
     QSound::play(fileName);
 }

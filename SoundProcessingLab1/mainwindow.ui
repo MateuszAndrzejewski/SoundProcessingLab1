@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="openFile_pushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -37,7 +37,7 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="playFile_pushButton">
     <property name="geometry">
      <rect>
       <x>90</x>

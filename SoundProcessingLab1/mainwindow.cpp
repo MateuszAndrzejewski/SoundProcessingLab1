@@ -14,12 +14,17 @@
 
 #include "wavfile.h"
 
+#include "gnuplot_i.hpp"
+#define GNUPLOT "C:/gnuplot/bin"
 QString fileName;
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{
+{   //set gnuplot location
+    Gnuplot::set_GNUPlotPath(GNUPLOT);
     ui->setupUi(this);
 }
 
@@ -73,6 +78,9 @@ void MainWindow::on_openFile_pushButton_clicked()
 
 void MainWindow::on_playFile_pushButton_clicked()
 {
+   //Gnuplot g1("lines");
+   //g1.set_title("Działa");
+   //g1.set_style("lines").plot_equation("x");
     QSound::play(fileName);
 }
 

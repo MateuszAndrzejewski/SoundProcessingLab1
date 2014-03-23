@@ -12,7 +12,7 @@ public:
             qint64 dataLength = 0);
 
     // Reads WAV header and seeks to start of data
-    bool readHeader(QIODevice &device);
+    bool readHeader(QIODevice &device, QByteArray *buffer);
 
     // Writes WAV header
     bool writeHeader(QIODevice &device);

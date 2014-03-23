@@ -14,8 +14,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    wavfile.cpp \
-    utils.cpp
+    utils.cpp \
+    wavfile.cpp
 
 HEADERS  += mainwindow.h \
     wavfile.h \

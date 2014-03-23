@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QVector>
 
 namespace Ui {
 class MainWindow;
@@ -15,7 +16,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    int readWavData(signed short *ramBuffer);
+    QVector <unsigned char> readWavData();
     
 private slots:
     void on_openFile_pushButton_clicked();

@@ -49,7 +49,7 @@ WavFile::WavFile(const QAudioFormat &format, qint64 dataLength)
 
 }
 
-bool WavFile::readHeader(QIODevice &device)
+bool WavFile::readHeader(QIODevice &device, QByteArray* buffer)
 {
     bool result = true;
 
@@ -73,7 +73,7 @@ bool WavFile::readHeader(QIODevice &device)
                     m_format.setByteOrder(QAudioFormat::BigEndian);
 
                 m_format.setChannelCount(qFromLittleEndian<quint16>(header.wave.numChannels));
-                m_format.setCodec("audio/pcm");
+                //m_format.setCodec("audio/pcm");
                 m_format.setSampleRate(qFromLittleEndian<quint32>(header.wave.sampleRate));
                 m_format.setSampleSize(qFromLittleEndian<quint16>(header.wave.bitsPerSample));
 

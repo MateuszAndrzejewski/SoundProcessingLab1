@@ -12,6 +12,8 @@
 #include <QByteArray>
 #include <QtMultimedia/QAudioFormat>
 
+#include "wavfile.h"
+
 QString fileName;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -26,14 +28,34 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int MainWindow::readWavData(signed short *ramBuffer)
+QVector <unsigned char> MainWindow::readWavData()
 {
+    QVector <unsigned char> output;
+
     QFile wavFile(fileName);
-    if (!wavFile.open(QFile::ReadOnly)) {
+    if (!wavFile.open(QIODevice::ReadOnly)) {
         qDebug() << "Failed to open WAV file...";
-        return -1; // Done
+        output.clear();
+        return output;
     }
 
+    int offset = 40;
+    QByteArray buffer = wavFile.readAll(); //get all bytes in the .wav file
+    QDataStream stream(buffer.mid(offset, 4)); //get the size of the data chunk
+    stream.device()->reset();
+    unsigned int size = 0;
+    stream >> size; //convert 4 byte size of the data chunk to int
+
+    QByteArray data = buffer.mid(offset + 4, size); //get the chunk with sound data
+    for(int i = 0; i < data.size(); i = i + 2) { //loop getting sound data bytes
+        QDataStream ministream(data.mid(i, 2));
+        unsigned char newDataByte;
+        ministream >> newDataByte;
+        output.append(newDataByte);
+    }
+
+    qDebug() << "Completed getting .wav data.";
+    return output;
 }
 
 void MainWindow::on_openFile_pushButton_clicked()
@@ -60,6 +82,6 @@ void MainWindow::on_psa_pushButton_clicked()
         QMessageBox::warning(this, "Warning", "No .wav file selected.", QMessageBox::Ok);
         return;
     }
-    signed short *buffer = new signed short [100000];
-    readWavData(buffer);
+
+    QVector <unsigned char> wavDataVector = readWavData();
 }

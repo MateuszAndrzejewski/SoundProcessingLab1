@@ -62,8 +62,8 @@ void MainWindow::on_openFile_pushButton_clicked()
 {
     if(fileName.length() == 0)
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                "C:/Users/Mateusz/Documents/Szkola/Sound Processing/Lab1/artificial/med",
-                                                //QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0),
+                                                //"C:/Users/Mateusz/Documents/Szkola/Sound Processing/Lab1/artificial/med",
+                                                QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0),
                                                 tr("Sound files (*.wav);;All files (*.*)"));
     else
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),

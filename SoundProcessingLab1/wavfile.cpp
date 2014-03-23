@@ -184,7 +184,7 @@ qint64 WavFile::readData(QIODevice &device, QByteArray &buffer,
     if (isPCMS16LE(outputFormat) && isPCMS16LE(m_format)) {
         QVector<char> inputSample(2 * m_format.channelCount());
 
-        qint16 *output = reinterpret_cast<qint16*>(buffer.data());
+        qint16 *output = reinterpret_cast<qint16*>(     buffer.data());
 
         while (result < buffer.size()) {
             if (device.read(inputSample.data(), inputSample.count())) {

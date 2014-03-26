@@ -33,9 +33,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QVector <unsigned char> MainWindow::readWavData()
+QVector <unsigned int> MainWindow::readWavData()
 {
-    QVector <unsigned char> output;
+    QVector <unsigned int> output;
 
     QFile wavFile(fileName);
     if (!wavFile.open(QIODevice::ReadOnly)) {
@@ -52,9 +52,9 @@ QVector <unsigned char> MainWindow::readWavData()
     stream >> size; //convert 4 byte size of the data chunk to int
 
     QByteArray data = buffer.mid(offset + 4, size); //get the chunk with sound data
-    for(int i = 0; i < data.size(); i = i + 2) { //loop getting sound data bytes
-        QDataStream ministream(data.mid(i, 2));
-        unsigned char newDataByte;
+    for(int i = 0; i < data.size(); i = i + 4) { //loop getting sample data
+        QDataStream ministream(data.mid(i, 4));
+        unsigned int newDataByte;
         ministream >> newDataByte;
         output.append(newDataByte);
     }
@@ -91,5 +91,5 @@ void MainWindow::on_psa_pushButton_clicked()
         return;
     }
 
-    QVector <unsigned char> wavDataVector = readWavData();
+    QVector <unsigned int> wavDataVector = readWavData();
 }

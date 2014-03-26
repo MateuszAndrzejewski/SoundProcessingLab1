@@ -16,7 +16,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QVector <unsigned char> readWavData();
+    QVector<unsigned int> readWavData();
     
 private slots:
     void on_openFile_pushButton_clicked();

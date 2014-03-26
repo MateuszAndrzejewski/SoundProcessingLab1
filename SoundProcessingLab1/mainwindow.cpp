@@ -12,16 +12,10 @@
 #include <QByteArray>
 #include <QtMultimedia/QAudioFormat>
 #include <QThread>
-#include <vector>
 
 #include "wavfile.h"
 #include "gnuplot_i.hpp"
 
-//#define GNUPLOT "C:/gnuplot/bin"
-#define GNUPLOT "D:/Narzedzia/gnuplot/bin"
-
-
-QString fileName;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -47,6 +41,10 @@ QVector <unsigned int> MainWindow::readWavData()
         return output;
     }
 
+    samples.clear();
+    x.clear();
+    y.clear();
+
     int offset = 40;
     QByteArray buffer = wavFile.readAll(); //get all bytes in the .wav file
     QDataStream stream(buffer.mid(offset, 4)); //get the size of the data chunk
@@ -61,8 +59,8 @@ QVector <unsigned int> MainWindow::readWavData()
         ministream >> newDataByte;
         output.append(newDataByte);
     }
-
     qDebug() << "Completed getting .wav data.";
+
     return output;
 }
 
@@ -77,6 +75,28 @@ void MainWindow::on_openFile_pushButton_clicked()
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                 fileName,
                                                 tr("Sound files (*.wav);;All files (*.*)"));
+
+    if(fileName.length() > 0) {
+        samples = readWavData();
+        for(unsigned int i = 0; i < samples.size(); i++) {
+            y.push_back((double) samples.toStdVector().at(i));
+            x.push_back((double)i);
+        }
+        qDebug() << "Samples loaded.";
+
+        QStringList nameList = fileName.split("/");
+        QString name = nameList.at(nameList.size()-3) + "_" + nameList.at(nameList.size()-2) + "_" + nameList.last();
+        qDebug() << "name" << name;
+
+        Gnuplot g1;
+        g1.set_title("Plot");
+        g1.set_style("lines");
+        g1.reset_plot();
+        g1.cmd("set terminal png size 1600");
+        g1.cmd("set output '" + name.toStdString() + "_waveform.png'");
+        g1.plot_x(y, "Waveform");
+        qDebug() << "Plot created";
+    }
 }
 
 void MainWindow::on_playFile_pushButton_clicked()
@@ -91,17 +111,18 @@ void MainWindow::on_psa_pushButton_clicked()
         return;
     }
 
-    QVector <unsigned int> data = readWavData();
-    std::vector <double> x;
-    std::vector <double> y;
-    for(unsigned int i = 0; i < data.size(); i++) {
-        y.push_back((double) data.toStdVector().at(i));
-        x.push_back((double)i);
+    int k = 2;
+    std::vector <double> newY;
+    for(int i = 0 + k; i < y.size(); i++) {
+        newY.push_back(y.at(i-k));
     }
 
-    Gnuplot g1("lines");
+    Gnuplot g1;
     g1.set_title("Plot");
-    g1.set_style("lines").plot_x(y, "Waveform");;
-
+    g1.set_style("dots");
+//    g1.reset_plot();
+//    g1.cmd("set terminal png size 1600");
+//    g1.cmd("set output '" + name.toStdString() + "_waveform.png'");
+    g1.plot_x(newY, "Waveform");
     QThread::sleep(5);
 }

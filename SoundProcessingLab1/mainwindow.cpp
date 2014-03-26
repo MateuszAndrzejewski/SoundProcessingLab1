@@ -11,19 +11,22 @@
 #include <QDataStream>
 #include <QByteArray>
 #include <QtMultimedia/QAudioFormat>
+#include <QThread>
+#include <vector>
 
 #include "wavfile.h"
-
 #include "gnuplot_i.hpp"
-#define GNUPLOT "C:/gnuplot/bin"
+
+//#define GNUPLOT "C:/gnuplot/bin"
+#define GNUPLOT "D:/Narzedzia/gnuplot/bin"
+
+
 QString fileName;
-
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{   //set gnuplot location
+{
+    //set gnuplot location
     Gnuplot::set_GNUPlotPath(GNUPLOT);
     ui->setupUi(this);
 }
@@ -67,8 +70,8 @@ void MainWindow::on_openFile_pushButton_clicked()
 {
     if(fileName.length() == 0)
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                //"C:/Users/Mateusz/Documents/Szkola/Sound Processing/Lab1/artificial/med",
-                                                QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0),
+                                                "C:/Users/Mateusz/Documents/Szkola/Sound Processing/Lab1/artificial/med",
+                                                //QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0),
                                                 tr("Sound files (*.wav);;All files (*.*)"));
     else
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
@@ -78,9 +81,6 @@ void MainWindow::on_openFile_pushButton_clicked()
 
 void MainWindow::on_playFile_pushButton_clicked()
 {
-   //Gnuplot g1("lines");
-   //g1.set_title("Działa");
-   //g1.set_style("lines").plot_equation("x");
     QSound::play(fileName);
 }
 
@@ -91,5 +91,17 @@ void MainWindow::on_psa_pushButton_clicked()
         return;
     }
 
-    QVector <unsigned int> wavDataVector = readWavData();
+    QVector <unsigned int> data = readWavData();
+    std::vector <double> x;
+    std::vector <double> y;
+    for(unsigned int i = 0; i < data.size(); i++) {
+        y.push_back((double) data.toStdVector().at(i));
+        x.push_back((double)i);
+    }
+
+    Gnuplot g1("lines");
+    g1.set_title("Plot");
+    g1.set_style("lines").plot_x(y, "Waveform");;
+
+    QThread::sleep(5);
 }
